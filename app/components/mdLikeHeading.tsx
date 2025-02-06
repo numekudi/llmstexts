@@ -1,6 +1,6 @@
 type HeaderTypes = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
-const MdLikeHeadding = ({
+const MdLikeHeading = ({
   variant,
   title,
 }: {
@@ -30,4 +30,4 @@ const MdLikeHeadding = ({
   );
 };
 
-export default MdLikeHeadding;
+export default MdLikeHeading;

@@ -1,12 +1,13 @@
 import { Link } from "react-router";
-import MdLikeHeadding from "~/components/mdLikeHeadding";
+import MdLikeHeading from "~/components/mdLikeHeading";
 
 export function Welcome() {
   return (
     <div className="container mx-auto p-4 flex flex-col justify-center prose dark:prose-invert">
-      <MdLikeHeadding title="llmstexts" variant="h1" />
+      <MdLikeHeading title="llmstexts" variant="h1" />
       <p>
-        A hub of Markdown, built for LLMs that browse the web for information.
+        A hub of LLM friendly Markdown, built for LLMs that browse the web for
+        information.
       </p>
       <p>Do you want to publish Markdown for LLMs?</p>
       <div className="space-x-4">
@@ -19,12 +20,12 @@ export function Welcome() {
         <span>or</span>
         <Link
           className="underline text-blue-600 hover:text-blue-800"
-          to={"/login"}
+          to={"/signin"}
         >
           Login
         </Link>
       </div>
-      <MdLikeHeadding title="Why llmstexts?" variant="h2" />
+      <MdLikeHeading title="Why llmstexts?" variant="h2" />
       <ol className="list-decimal list-inside space-y-2">
         <li>
           <strong>Optimized for LLMs</strong>
@@ -47,26 +48,16 @@ export function Welcome() {
           </p>
         </li>
       </ol>
-      <MdLikeHeadding title="How It Works" variant="h2" />
+      <MdLikeHeading title="How It Works" variant="h2" />
       <ol className="list-decimal list-inside space-y-2">
         <li>Sign up for an account.</li>
         <li>Upload a Markdown file or register a link to an llms.txt file.</li>
+        <li>
+          Hopefully, the Google search crawler will index it, making it
+          accessible to LLMs through search.
+        </li>
       </ol>
       <p className="mt-4">Join us in making the web more readable for LLMs!</p>
-      <div className="space-x-4">
-        <Link
-          className="underline text-blue-600 hover:text-blue-800"
-          to={"/signup"}
-        >
-          Sign Up
-        </Link>
-        <Link
-          className="underline text-blue-600 hover:text-blue-800"
-          to={"/login"}
-        >
-          Login
-        </Link>
-      </div>
     </div>
   );
 }

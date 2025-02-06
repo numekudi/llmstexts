@@ -2,7 +2,7 @@ import { useState } from "react";
 import { auth } from "~/firebase/firebase.client";
 import { Form } from "react-router";
 import { sendPasswordResetEmail } from "firebase/auth";
-import MdLikeHeadding from "~/components/mdLikeHeadding";
+import MdLikeHeading from "~/components/mdLikeHeading";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -35,7 +35,7 @@ export default function ForgotPassword() {
   return (
     <div className="container mx-auto p-4 flex flex-col justify-center prose dark:prose-invert">
       <Form onSubmit={handleSubmit} className="flex flex-col space-y-1">
-        <MdLikeHeadding title="Forgot Password" variant="h1" />
+        <MdLikeHeading title="Forgot Password" variant="h1" />
         <label htmlFor="email">
           Email: <br />
           <input
