@@ -43,13 +43,25 @@ export const listLLMTexts = async (
   afterId?: string
 ) => {
   const after = afterId && doc(db, "users", uid, "texts", afterId);
-  const q = query(
-    collection(db, "users", uid, "texts"),
-    orderBy("createdAt", "desc"),
-    startAfter(after),
-    limit(lim)
-  );
+
+  const q = after
+    ? query(
+        collection(db, "users", uid, "texts"),
+        orderBy("createdAt", "desc"),
+        startAfter(after),
+        limit(lim)
+      )
+    : query(
+        collection(db, "users", uid, "texts"),
+        orderBy("createdAt", "desc"),
+        limit(lim)
+      );
   return getDocs(q);
+};
+
+export const getText = async (uid: string, customId: string) => {
+  const textRef = doc(db, "users", uid, "texts", customId);
+  return await getDoc(textRef);
 };
 
 export async function updateProfile(

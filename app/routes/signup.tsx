@@ -23,9 +23,6 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
 };
 
 export default function Signup({ actionData }: Route.ComponentProps) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   return (
     <div className="container mx-auto p-4 flex flex-col justify-center prose dark:prose-invert">
       <Form method="post" className="flex flex-col space-y-1">
@@ -36,8 +33,6 @@ export default function Signup({ actionData }: Route.ComponentProps) {
             className="border rounded-lg"
             type="email"
             name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </label>
@@ -47,8 +42,6 @@ export default function Signup({ actionData }: Route.ComponentProps) {
             className="border rounded-lg"
             type="password"
             name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             required
           />
         </label>

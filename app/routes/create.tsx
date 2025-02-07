@@ -36,12 +36,12 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
 
   if (!CUSTOM_ID_REGEX.test(customId)) {
     return {
-      error: "Custom ID must contain only letters, numbers, and underscores",
+      error: "Custom ID must contain only alphabets, numbers, and underscores",
     };
   }
 
-  const profile = String(data.get("description"));
-  if (profile.length > 1024) {
+  const description = String(data.get("description"));
+  if (description.length > 1024) {
     return { error: "Profile must be less than 1024 characters" };
   }
 
@@ -50,7 +50,8 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
     return { error: "Invalid input type" };
   }
 
-  const url = String(data.get("url"));
+  const urlData = data.get("url");
+  let url = urlData ? String(urlData) : null;
   const file = data.get("file") as File | null;
 
   if (inputType === "url" && !url) {
@@ -65,17 +66,22 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
     }
   }
   try {
+    if (file) {
+      await uploadTextFile(auth.currentUser.uid, customId, file);
+      url = await getLLMTextUrl(auth.currentUser.uid, customId);
+    }
     await createLLMText(auth.currentUser.uid, {
       customId,
-      description: profile,
+      description: description,
       inputType: inputType,
       name: file?.name || null,
       uid: auth.currentUser.uid,
-      externalUrl: url || null,
+      url: url,
     });
-    if (file) {
-      await uploadTextFile(auth.currentUser.uid, customId, file);
-    }
+    const profile = getCustomProfile(auth.currentUser.uid);
+    const doc = await getDoc(profile);
+    const docData = doc.data() as CustomUserData | undefined;
+    return redirect(`users/${docData?.customId}`);
   } catch (error) {
     console.error(error);
     if (error instanceof CustomIdAlreadyExistsError) {
@@ -111,7 +117,7 @@ export default function Create({
       >
         <MdLikeHeading title="Create" variant="h1" />
         <label htmlFor="customId">
-          <div className="font-bold">Your custom ID*</div>
+          <div className="font-bold">Your text ID*</div>
           <span>{loaderData?.customId} / </span>
           <input
             className="border rounded-lg"

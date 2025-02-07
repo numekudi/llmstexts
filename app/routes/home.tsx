@@ -9,19 +9,9 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export const loader = async ({}: Route.LoaderArgs) => {
-  // const result = await remark().use(html).process(content);
-  // console.log(result);
-  // return { html: result.value.toString() };
-  return { data: "" };
-};
-
-export const clientLoader = async ({
-  serverLoader,
-}: Route.ClientLoaderArgs) => {
+export const clientLoader = async ({}: Route.ClientLoaderArgs) => {
   await auth.authStateReady();
-  const serverData = await serverLoader();
-  return { user: auth.currentUser, data: serverData.data };
+  return { user: auth.currentUser };
 };
 
 export default function Home({ loaderData }: Route.ComponentProps) {

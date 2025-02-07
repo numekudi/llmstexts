@@ -11,12 +11,12 @@ const MdLikeHeading = ({
 
   const hasBottomBorder = variant === "h1" || variant === "h2";
   const fontSize = {
-    h1: "text-6xl",
-    h2: "text-5xl",
-    h3: "text-4xl",
-    h4: "text-3xl",
-    h5: "text-2xl",
-    h6: "text-lg",
+    h1: "text-2xl md:text-3xl",
+    h2: "text-2xl md:text-3xl",
+    h3: "text-2xl md:text-3xl",
+    h4: "text-lg md:text-2xl",
+    h5: "text-lg md:text-lg",
+    h6: "text-lg md:text-lg",
   }[variant];
   const hashes = `#`.repeat(parseInt(variant.replace("h", "")));
 

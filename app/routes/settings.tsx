@@ -1,8 +1,5 @@
-import { useState } from "react";
 import { auth } from "~/firebase/firebase.client";
-import { Form, Link, Navigate, redirect } from "react-router";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { FirebaseError } from "firebase/app";
+import { Form, redirect } from "react-router";
 import MdLikeHeading from "~/components/mdLikeHeading";
 import {
   CustomIdAlreadyExistsError,
@@ -12,6 +9,8 @@ import {
 import type { Route } from "./+types/settings";
 import { getDoc } from "firebase/firestore";
 import type { CustomUserData } from "~/firebase/models";
+
+const CUSTOM_ID_REGEX = /^[a-zA-Z0-9]+$/;
 
 export const clientAction = async ({ request }: Route.ClientActionArgs) => {
   await auth.authStateReady();
@@ -26,6 +25,12 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
   }
   if (customId.length > 16) {
     return { error: "Custom ID must be less than 20 characters" };
+  }
+
+  if (!CUSTOM_ID_REGEX.test(customId)) {
+    return {
+      error: "Custom ID must contain only alphabets, numbers.",
+    };
   }
 
   const profile = String(data.get("profile"));
@@ -63,8 +68,6 @@ export default function Settings({
   actionData,
   loaderData,
 }: Route.ComponentProps) {
-  const [customId, setCustomId] = useState(loaderData?.customId || "");
-  const [profile, setProfile] = useState(loaderData?.profile || "");
   console.log(actionData);
 
   return (
@@ -80,8 +83,7 @@ export default function Settings({
             className="border rounded-lg"
             type="text"
             name="customId"
-            value={customId}
-            onChange={(e) => setCustomId(e.target.value)}
+            defaultValue={loaderData?.customId}
             required
             maxLength={16}
           />
@@ -91,8 +93,7 @@ export default function Settings({
           <textarea
             className="border rounded-lg w-full"
             name="profile"
-            value={profile}
-            onChange={(e) => setProfile(e.target.value)}
+            defaultValue={loaderData?.profile}
             maxLength={1024}
           />
         </label>

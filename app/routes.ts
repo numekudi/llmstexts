@@ -9,6 +9,7 @@ export default [
     route("test.md", "routes/test.tsx"),
     route("/settings", "routes/settings.tsx"),
     route("/create", "routes/create.tsx"),
-    route("/users/:userId", "routes/users.$userId.tsx"),
+    route("/users/:userId", "routes/users.tsx"),
+    route("/users/:userId/texts/:textId", "routes/texts.tsx"),
   ]),
 ] satisfies RouteConfig;

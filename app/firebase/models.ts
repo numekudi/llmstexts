@@ -17,5 +17,5 @@ export type LLMText = {
   name: string | null;
   description: string | null;
   inputType: "file" | "url";
-  externalUrl: string | null;
+  url: string | null;
 };
