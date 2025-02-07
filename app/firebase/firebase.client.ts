@@ -3,6 +3,8 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
+console.log(import.meta.env.VITE_FIREBASE_CONFIG);
+
 export const app = initializeApp(
   JSON.parse(import.meta.env.VITE_FIREBASE_CONFIG || "{}"),
   "client"
