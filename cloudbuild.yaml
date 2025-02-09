@@ -1,17 +1,10 @@
 steps:
   - name: gcr.io/cloud-builders/docker
     args:
-      - -c
-      - build
-      - "--no-cache"
-      - "-t"
-      - >-
-        $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
-      - .
-      - "-f"
-      - Dockerfile
-      - "--build-arg"
-      - VITE_FIREBASE_CONFIG=$$VITE_FIREBASE_CONFIG
+      [
+        "-c",
+        "build --no-cache -t $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA . -f Dockerfile --build-arg VITE_FIREBASE_CONFIG=$$VITE_FIREBASE_CONFIG",
+      ]
     id: Build
     secretEnv: ["VITE_FIREBASE_CONFIG"]
   - name: gcr.io/cloud-builders/docker
