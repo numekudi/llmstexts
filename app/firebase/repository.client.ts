@@ -1,6 +1,10 @@
 import {
+  addDoc,
   collection,
+  count,
+  deleteDoc,
   doc,
+  getCountFromServer,
   getDoc,
   getDocs,
   limit,
@@ -16,9 +20,9 @@ import { db, storage } from "./firebase.client";
 import type { CustomUserData, LLMText, WithTimeStamp } from "./models";
 import {
   getDownloadURL,
-  getMetadata,
   ref,
   uploadBytesResumable,
+  deleteObject,
 } from "firebase/storage";
 
 export class CustomIdAlreadyExistsError extends Error {
@@ -37,31 +41,18 @@ export const getCustomProfileByCustomId = (customId: string) => {
   return getDocs(q);
 };
 
-export const listLLMTexts = async (
-  uid: string,
-  lim: number = 10,
-  afterId?: string
-) => {
-  const after = afterId && doc(db, "users", uid, "texts", afterId);
-
-  const q = after
-    ? query(
-        collection(db, "users", uid, "texts"),
-        orderBy("createdAt", "desc"),
-        startAfter(after),
-        limit(lim)
-      )
-    : query(
-        collection(db, "users", uid, "texts"),
-        orderBy("createdAt", "desc"),
-        limit(lim)
-      );
-  return getDocs(q);
+export const getText = async (uid: string, customId: string) => {
+  const q = query(collection(db, "texts"), where("customId", "==", customId));
+  return await getDocs(q);
 };
 
-export const getText = async (uid: string, customId: string) => {
-  const textRef = doc(db, "users", uid, "texts", customId);
-  return await getDoc(textRef);
+export const deleteText = async (uid: string, customId: string) => {
+  const docs = await getText(uid, customId);
+  const d = docs.docs[0];
+  if (d) {
+    await deleteDoc(d.ref);
+  }
+  return;
 };
 
 export async function updateProfile(
@@ -103,8 +94,6 @@ export async function updateProfile(
         transaction.set(customProfileRef, d);
       }
     });
-
-    console.log("customId created successfully");
   } catch (error) {
     console.error("error:", error);
     throw error;
@@ -112,10 +101,15 @@ export async function updateProfile(
 }
 
 export const createLLMText = async (uid: string, data: LLMText) => {
-  const textRef = doc(db, "users", uid, "texts", data.customId);
+  const c = collection(db, "texts");
   // 重複チェック
-  const td = await getDoc(textRef);
-  if (td.exists()) {
+  const q = query(
+    c,
+    where("uid", "==", uid),
+    where("customId", "==", data.customId)
+  );
+  const s = await getDocs(q);
+  if (!s.empty) {
     throw new CustomIdAlreadyExistsError();
   }
   const d: WithTimeStamp<LLMText> = {
@@ -124,7 +118,14 @@ export const createLLMText = async (uid: string, data: LLMText) => {
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   };
-  await setDoc(textRef, d);
+  await addDoc(c, d);
+};
+
+export const countLLMText = async (uid: string) => {
+  const c = collection(db, "texts");
+  const q = query(c, where("uid", "==", uid));
+  const res = await getCountFromServer(q);
+  return res.data().count;
 };
 
 export const uploadTextFile = async (
@@ -139,6 +140,15 @@ export const uploadTextFile = async (
   try {
     const uploadTask = uploadBytesResumable(fileRef, file, metadata);
     return await uploadTask;
+  } catch (error) {
+    console.error("Upload error:", error);
+  }
+};
+
+export const deleteTextFile = async (uid: string, customId: string) => {
+  const fileRef = ref(storage, `users/${uid}/texts/${customId}`);
+  try {
+    return await deleteObject(fileRef);
   } catch (error) {
     console.error("Upload error:", error);
   }

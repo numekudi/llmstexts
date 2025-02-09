@@ -10,10 +10,9 @@ export const getCustomProfileByCustomId = (customId: string) => {
 
 export const getLLMText = async (uid: string, customId: string) => {
   return db
-    .collection("users")
-    .doc(uid)
     .collection("texts")
-    .doc(customId)
+    .where("customId", "==", customId)
+    .where("uid", "==", uid)
     .get();
 };
 
@@ -23,9 +22,8 @@ export const listLLMTexts = async (
   offset: number = 0
 ) => {
   const col = await db
-    .collection("users")
-    .doc(uid)
     .collection("texts")
+    .where("uid", "==", uid)
     .orderBy("createdAt", "desc")
     .limit(limit)
     .offset(offset)

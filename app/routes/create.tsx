@@ -1,10 +1,11 @@
 import { useId, useState } from "react";
 import { auth, storage } from "~/firebase/firebase.client";
-import { Form, Link, Navigate, redirect } from "react-router";
+import { Form, Link, Navigate, redirect, useFetcher } from "react-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import MdLikeHeading from "~/components/mdLikeHeading";
 import {
+  countLLMText,
   createLLMText,
   CustomIdAlreadyExistsError,
   getCustomProfile,
@@ -15,8 +16,8 @@ import {
 import type { Route } from "./+types/settings";
 import { getDoc } from "firebase/firestore";
 import type { CustomUserData } from "~/firebase/models";
-
-const SIZE = 1024 * 1024 * 5; // 5MB
+const LIMIT = 50;
+const SIZE = 1024 * 1024 * 4; // 4MB
 // alphabet + numbers + underscore
 const CUSTOM_ID_REGEX = /^[a-zA-Z0-9_]+$/;
 
@@ -31,7 +32,7 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
     return { error: "Custom ID cannot be empty" };
   }
   if (customId.length > 64) {
-    return { error: "Custom ID must be less than 20 characters" };
+    return { error: "Custom ID must be less than 64 characters" };
   }
 
   if (!CUSTOM_ID_REGEX.test(customId)) {
@@ -39,11 +40,25 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
       error: "Custom ID must contain only alphabets, numbers, and underscores",
     };
   }
+  const customName = String(data.get("name"));
+  if (customName.length === 0) {
+    return { error: "Name cannot be empty" };
+  }
+  if (customName.length > 64) {
+    return { error: "Name must be less than 64 characters" };
+  }
 
+  if (!CUSTOM_ID_REGEX.test(customName)) {
+    return {
+      error: "Name must contain only alphabets, numbers, and underscores",
+    };
+  }
   const description = String(data.get("description"));
   if (description.length > 1024) {
     return { error: "Profile must be less than 1024 characters" };
   }
+
+  const webpageUrl = String(data.get("webpage"));
 
   const inputType = data.get("inputType");
   if (inputType !== "file" && inputType !== "url") {
@@ -67,21 +82,27 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
   }
   try {
     if (file) {
+      const count = await countLLMText(auth.currentUser.uid);
+      if (count > LIMIT) {
+        return { error: "Cannot create more than 50" };
+      }
       await uploadTextFile(auth.currentUser.uid, customId, file);
       url = await getLLMTextUrl(auth.currentUser.uid, customId);
     }
     await createLLMText(auth.currentUser.uid, {
       customId,
+      customName: customName,
       description: description,
       inputType: inputType,
-      name: file?.name || null,
+      webpage: webpageUrl,
+      filename: file?.name || null,
       uid: auth.currentUser.uid,
-      url: url,
+      downloadUrl: url as string,
     });
     const profile = getCustomProfile(auth.currentUser.uid);
     const doc = await getDoc(profile);
     const docData = doc.data() as CustomUserData | undefined;
-    return redirect(`users/${docData?.customId}`);
+    return redirect(`/users/${docData?.customId}`);
   } catch (error) {
     console.error(error);
     if (error instanceof CustomIdAlreadyExistsError) {
@@ -106,11 +127,11 @@ export default function Create({
   loaderData,
 }: Route.ComponentProps) {
   const [inputType, setInputType] = useState<"file" | "url">("file");
-  console.log(actionData?.error);
+  const fetcher = useFetcher();
 
   return (
     <div className="container mx-auto p-4 flex flex-col prose dark:prose-invert">
-      <Form
+      <fetcher.Form
         method="post"
         encType="multipart/form-data"
         className="flex flex-col space-y-2"
@@ -127,12 +148,30 @@ export default function Create({
             maxLength={64}
           />
         </label>
+        <label htmlFor="name">
+          <div className="font-bold">Name*</div>
+          <input
+            type="text"
+            className="border rounded-lg"
+            name="name"
+            maxLength={64}
+          />
+        </label>
         <label htmlFor="description">
-          <div>Description</div>
+          <div>Description (optional)</div>
           <textarea
             className="border rounded-lg w-full"
             name="description"
             maxLength={1024}
+          />
+        </label>
+        <label htmlFor="webpage">
+          <div>Substitute webpage? (optional)</div>
+          <input
+            type="url"
+            className="border rounded-lg"
+            name="webpage"
+            maxLength={64}
           />
         </label>
         <label>
@@ -162,13 +201,13 @@ export default function Create({
         </label>
         {inputType === "url" && (
           <label htmlFor="url">
-            <div>URL</div>
+            <div className="font-bold">URL*</div>
             <input className="border rounded-lg w-full" type="url" name="url" />
           </label>
         )}
         {inputType === "file" && (
           <label htmlFor="file">
-            <div>Text or Markdown file</div>
+            <div className="font-bold">Text or Markdown file*</div>
             <input
               className="border rounded-lg"
               type="file"
@@ -178,10 +217,14 @@ export default function Create({
             />
           </label>
         )}
-        <button className="border rounded-lg px-2 w-fit" type="submit">
-          create
+        <button
+          className="border rounded-lg px-2 w-fit"
+          type="submit"
+          disabled={fetcher.state === "submitting"}
+        >
+          {fetcher.state === "submitting" ? "creating..." : "create"}
         </button>
-      </Form>
+      </fetcher.Form>
       {actionData?.error && <p className="text-red-500">{actionData?.error}</p>}
       {actionData?.message && (
         <p className="text-green-500">{actionData.message}</p>

@@ -1,4 +1,4 @@
-import type { FieldValue, WithFieldValue } from "firebase/firestore";
+import type { FieldValue } from "firebase/firestore";
 
 export type WithTimeStamp<T> = {
   createdAt: FieldValue;
@@ -14,8 +14,10 @@ export type CustomUserData = {
 export type LLMText = {
   uid: string;
   customId: string;
-  name: string | null;
+  customName: string;
+  filename: string | null;
   description: string | null;
+  webpage?: string;
   inputType: "file" | "url";
-  url: string | null;
+  downloadUrl: string;
 };

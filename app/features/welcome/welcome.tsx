@@ -47,6 +47,16 @@ export function Welcome() {
             information retrieval more efficient and eco-friendly.
           </p>
         </li>
+        <li>
+          <strong>Preventing Excessive LLM-Driven Traffic</strong>
+          <p>
+            When LLMs repeatedly access the same website for information, they
+            can generate unintended high traffic, potentially slowing down or
+            disrupting the original site. llmstexts acts as a dedicated
+            text-based repository, reducing direct queries to primary websites
+            and preventing excessive load caused by automated browsing.
+          </p>
+        </li>
       </ol>
       <MdLikeHeading title="How It Works" variant="h2" />
       <ol className="list-decimal list-inside space-y-2">
@@ -55,6 +65,13 @@ export function Welcome() {
         <li>
           Hopefully, the Google search crawler will index it, making it
           accessible to LLMs through search.
+        </li>
+        <li>
+          Uploaded text can be accessed at{" "}
+          <code>
+            users/{"{userId}"}/texts/{"{textId}"}.txt
+          </code>
+          .
         </li>
       </ol>
       <p className="mt-4">Join us in making the web more readable for LLMs!</p>

@@ -1,31 +1,53 @@
-import { Link, Outlet, redirect } from "react-router";
+import { Form, Link, Outlet, redirect } from "react-router";
 import type { Route } from "./+types/layout";
 import { auth } from "~/firebase/firebase.client";
 import { getCustomProfile } from "~/firebase/repository.client";
 import { getDoc } from "firebase/firestore";
 import type { CustomUserData } from "~/firebase/models";
-export const clientLoader = async ({}: Route.ClientLoaderArgs) => {
-  await auth.authStateReady();
+import { useEffect, useState } from "react";
+import { signOut } from "firebase/auth";
+export const clientAction = async ({}: Route.ClientActionArgs) => {};
 
-  const currentProfile =
-    auth.currentUser && getCustomProfile(auth.currentUser.uid);
-  const profile = currentProfile && (await getDoc(currentProfile));
-  const data = profile && (profile.data() as CustomUserData);
+export default function Layout({}: Route.ComponentProps) {
+  const [profile, setProfile] = useState<CustomUserData>();
+  const [loading, setLoading] = useState(true);
 
-  return { user: auth.currentUser, profile: data };
-};
+  useEffect(() => {
+    const f = async () => {
+      await auth.authStateReady();
 
-export default function Layout({ loaderData }: Route.ComponentProps) {
+      const currentProfile =
+        auth.currentUser && getCustomProfile(auth.currentUser.uid);
+      const profile = currentProfile && (await getDoc(currentProfile));
+      const data = profile && (profile.data() as CustomUserData);
+      setProfile(data ?? undefined);
+      setLoading(false);
+    };
+    f();
+  }, []);
+
+  const handleSignOut = async () => {
+    await auth.authStateReady();
+    await signOut(auth);
+    setProfile(undefined);
+  };
+
   return (
     <div className="w-full">
       <div className="w-full">
-        {loaderData.user && (
-          <div className="w-full flex justify-end font-bold bg-gray-100 dark:bg-zinc-900 px-4">
-            {loaderData.profile && (
+        <div className="flex justify-between w-full dark:bg-zinc-900 bg-gray-100 px-4 font-bold">
+          <Link
+            className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
+            to={"/"}
+          >
+            Home
+          </Link>
+          <div className="flex-1 flex justify-end">
+            {profile && !loading && (
               <>
                 <Link
                   className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
-                  to={`users/${loaderData.profile.customId}`}
+                  to={`users/${profile.customId}`}
                 >
                   Manage Texts
                 </Link>
@@ -35,32 +57,38 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
                 >
                   Create Text
                 </Link>
+                <Link
+                  className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
+                  to={`/settings`}
+                >
+                  Settings
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="text-blue-600 hover:text-blue-800 px-2 py-4 font-medium"
+                >
+                  Sign Out
+                </button>
               </>
             )}
-            <Link
-              className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
-              to={`/settings`}
-            >
-              Settings
-            </Link>
+            {!profile && !loading && (
+              <div className="w-full flex justify-end">
+                <Link
+                  to={"/signup"}
+                  className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
+                >
+                  Sign Up
+                </Link>
+                <Link
+                  to={"/signin"}
+                  className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
+                >
+                  Sign In
+                </Link>
+              </div>
+            )}
           </div>
-        )}
-        {!loaderData.user && (
-          <div className="w-full flex justify-end">
-            <Link
-              to={"/signup"}
-              className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
-            >
-              Sign Up
-            </Link>
-            <Link
-              to={"/signin"}
-              className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
-            >
-              Login
-            </Link>
-          </div>
-        )}
+        </div>
       </div>
       <Outlet />
     </div>

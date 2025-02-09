@@ -3,7 +3,7 @@ import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
 
-export const app = initializeApp({}, "server");
+export const app = initializeApp({});
 
 export const auth = getAuth(app);
 

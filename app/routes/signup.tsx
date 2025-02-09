@@ -10,7 +10,6 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
   const data = await request.formData();
   const email = data.get("email");
   const password = data.get("password");
-  console.log(data);
   if (email === null || password === null) {
     return null;
   }

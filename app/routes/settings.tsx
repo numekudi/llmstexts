@@ -47,7 +47,6 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
   } catch (error) {
     console.error(error);
     if (error instanceof CustomIdAlreadyExistsError) {
-      console.log("CustomIdAlreadyExistsError");
       return { error: "Custom ID already exists. Please try another ID." };
     }
   }
@@ -68,8 +67,6 @@ export default function Settings({
   actionData,
   loaderData,
 }: Route.ComponentProps) {
-  console.log(actionData);
-
   return (
     <div className="container mx-auto p-4 flex flex-col prose dark:prose-invert">
       <Form method="post" className="flex flex-col space-y-2">

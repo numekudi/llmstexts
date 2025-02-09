@@ -10,13 +10,11 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
   const data = await request.formData();
   const email = data.get("email");
   const password = data.get("password");
-  console.log(data);
   if (email === null || password === null) {
     return null;
   }
   try {
     await signInWithEmailAndPassword(auth, String(email), String(password));
-    console.log(auth.currentUser);
     return redirect("/");
   } catch (error) {
     console.error(error);
@@ -30,8 +28,6 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
 export default function Login({ actionData }: Route.ComponentProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  console.log(actionData);
 
   return (
     <div className="container mx-auto p-4 flex flex-col justify-center prose dark:prose-invert">
