@@ -42,6 +42,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            autoComplete="email"
           />
         </label>
         <label htmlFor="password">
@@ -53,6 +54,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            autoComplete="current-password"
           />
         </label>
         <button className="border rounded-lg px-2 w-fit mt-2" type="submit">

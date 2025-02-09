@@ -32,6 +32,7 @@ export default function Signup({ actionData }: Route.ComponentProps) {
             className="border rounded-lg"
             type="email"
             name="email"
+            autoComplete="email"
             required
           />
         </label>
@@ -41,6 +42,7 @@ export default function Signup({ actionData }: Route.ComponentProps) {
             className="border rounded-lg"
             type="password"
             name="password"
+            autoComplete="new-password"
             required
           />
         </label>
