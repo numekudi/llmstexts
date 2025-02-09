@@ -32,7 +32,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
   return (
     <div className="container mx-auto p-4 flex flex-col justify-center prose dark:prose-invert">
       <Form method="post" className="flex flex-col space-y-2">
-        <MdLikeHeading title="Login" variant="h1" />
+        <MdLikeHeading title="Sign In" variant="h1" />
         <label htmlFor="email">
           Email <br />
           <input
@@ -56,7 +56,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
           />
         </label>
         <button className="border rounded-lg px-2 w-fit mt-2" type="submit">
-          {"Login"}
+          {"Sign In"}
         </button>
       </Form>
       {actionData?.error && <p className="text-red-500">{actionData.error}</p>}

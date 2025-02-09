@@ -22,7 +22,7 @@ export function Welcome() {
           className="underline text-blue-600 hover:text-blue-800"
           to={"/signin"}
         >
-          Login
+          Sign In
         </Link>
       </div>
       <MdLikeHeading title="Why llmstexts?" variant="h2" />
