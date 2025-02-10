@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "man-llm-dev"
-  }
+    "default": "man-llm-dev",
+    "release": "llmstexts"
+  },
+  "targets": {},
+  "etags": {}
 }
