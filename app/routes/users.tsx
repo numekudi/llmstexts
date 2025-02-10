@@ -67,7 +67,7 @@ export default function UsersUserId({ loaderData }: Route.ComponentProps) {
                     <div className="flex rounded-md items-center">
                       <div className="hover:bg-zinc-200 dark:hover:bg-zinc-700">
                         <Link
-                          to={`/users/${data.pageUser?.customId}texts/${text.customId}`}
+                          to={`/users/${data.pageUser?.customId}/texts/${text.customId}`}
                         >
                           more...
                         </Link>
