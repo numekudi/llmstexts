@@ -4,7 +4,7 @@ import { getCustomProfileByCustomId as getCustomProfileByCustomIdServer } from "
 import MdLikeHeading from "~/components/mdLikeHeading";
 import type { CustomUserData, LLMText } from "~/firebase/models";
 import { Form, Link, redirect, useParams } from "react-router";
-import { getLLMText } from "~/firebase/repository.server";
+import { getLLMTextByCustomId } from "~/firebase/repository.server";
 import { auth } from "~/firebase/firebase.client";
 import { useEffect, useState } from "react";
 import {
@@ -22,7 +22,7 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
     const profile = await getCustomProfileByCustomIdServer(userId);
     const uid = profile.docs[0]?.id as string | undefined;
     if (uid) {
-      const res = await getLLMText(uid, textIdWithoutExtension);
+      const res = await getLLMTextByCustomId(uid, textIdWithoutExtension);
       const d = res.docs[0]?.data() as LLMText;
 
       return redirect(d.downloadUrl);
@@ -30,7 +30,9 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
   }
   const profile = await getCustomProfileByCustomIdServer(userId);
   const profileId = profile.docs[0]?.id as string | undefined;
-  const text = profileId ? await getLLMText(profileId, textId) : undefined;
+  const text = profileId
+    ? await getLLMTextByCustomId(profileId, textId)
+    : undefined;
 
   const data = text?.docs[0]?.data() as LLMText | undefined;
   return {
@@ -100,7 +102,7 @@ export default function Texts({ loaderData }: Route.ComponentProps) {
         {isLoginUser && (
           <Form method="delete">
             <div className="w-full flex justify-end">
-              <button className="bg-red-500 rounded-md px-2 cursor-pointer">
+              <button className="bg-red-500 rounded-md px-2 cursor-pointer text-white">
                 delete
               </button>
             </div>

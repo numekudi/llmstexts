@@ -24,12 +24,17 @@ export default function Layout({}: Route.ComponentProps) {
       setLoading(false);
     };
     f();
+    auth.onAuthStateChanged(async (u) => {
+      const currentProfile = u && getCustomProfile(u.uid);
+      const profile = currentProfile && (await getDoc(currentProfile));
+      const data = profile && (profile.data() as CustomUserData);
+      setProfile(data ?? undefined);
+    });
   }, []);
 
   const handleSignOut = async () => {
     await auth.authStateReady();
     await signOut(auth);
-    setProfile(undefined);
   };
 
   return (

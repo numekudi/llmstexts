@@ -38,34 +38,39 @@ export default function UsersUserId({ loaderData }: Route.ComponentProps) {
         <div className="space-y-2 py-2">
           {data.texts &&
             data.texts.map((text, i) => {
-              const t = text as LLMText;
               return (
                 <div className="flex w-full" key={i}>
                   <div className="flex space-x-1 w-full">
                     <div className="flex flex-col py-2 px-4 space-x-2 w-full rounded-md">
                       <Link
                         to={`${text.downloadUrl}`}
-                        className="flex dark:hover:bg-zinc-700"
+                        className="flex hover:bg-zinc-200 dark:hover:bg-zinc-700"
                       >
                         <div className="flex flex-col justify-center items-center px-2">
                           <div className="rounded-full bg-gray-500 w-2 h-2"></div>
                         </div>
                         <div>
                           <div className="space-x-2">
-                            <span className="font-bold">{t.customName}a</span>
-                            <span className="">{t.customId}</span>
+                            <span className="font-bold">
+                              {text.customName}a
+                            </span>
+                            <span className="">{text.customId}</span>
                           </div>
                           <div className="flex justify-between">
                             <div className="text-gray-700 dark:text-gray-300 min-h-[1rem] break-words">
-                              {t.description}
+                              {text.description}
                             </div>
                           </div>
                         </div>
                       </Link>
                     </div>
                     <div className="flex rounded-md items-center">
-                      <div className="dark:hover:bg-zinc-700">
-                        <Link to={`texts/${text.customId}`}>more...</Link>
+                      <div className="hover:bg-zinc-200 dark:hover:bg-zinc-700">
+                        <Link
+                          to={`/users/${data.pageUser?.customId}texts/${text.customId}`}
+                        >
+                          more...
+                        </Link>
                       </div>
                     </div>
                   </div>
