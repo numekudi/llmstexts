@@ -74,7 +74,8 @@ export default function Settings({
         <label htmlFor="customId">
           <div className="font-bold">Your custom ID*</div>
           <div className="text-sm text-gray-500">
-            The published text will be customId/textId.
+            Required for text publication! The published text will be
+            `users/customId/texts/textId` .
           </div>
           <input
             className="border rounded-lg"
@@ -94,7 +95,10 @@ export default function Settings({
             maxLength={1024}
           />
         </label>
-        <button className="border rounded-lg px-2 w-fit" type="submit">
+        <button
+          className="border rounded-lg px-2 w-fit cursor-pointer"
+          type="submit"
+        >
           Save
         </button>
       </Form>
