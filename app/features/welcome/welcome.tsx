@@ -114,6 +114,14 @@ export function Welcome({
           </div>
         );
       })}
+      <div className="pt-8">
+        <Link
+          to={"https://x.com/numekudi"}
+          className="dark:text-gray-400 text-gray-600 bottom-0"
+        >
+          bugs? X: @numekudi
+        </Link>
+      </div>
     </main>
   );
 }

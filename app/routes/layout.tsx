@@ -45,7 +45,7 @@ export default function Layout({}: Route.ComponentProps) {
       <div className="w-full">
         <div className="flex justify-between w-full dark:bg-zinc-900 bg-gray-100 px-4 font-bold">
           <Link
-            className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
+            className="underline text-blue-600 hover:text-blue-800 px-1 py-4"
             to={"/"}
           >
             Home
@@ -55,27 +55,27 @@ export default function Layout({}: Route.ComponentProps) {
               <>
                 {profile && (
                   <Link
-                    className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
+                    className="underline text-blue-600 hover:text-blue-800 px-1 py-4"
                     to={`users/${profile.customId}`}
                   >
                     Manage Texts
                   </Link>
                 )}
                 <Link
-                  className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
+                  className="underline text-blue-600 hover:text-blue-800 px-1 py-4"
                   to={`/create`}
                 >
                   Create Text
                 </Link>
                 <Link
-                  className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
+                  className="underline text-blue-600 hover:text-blue-800 px-1 py-4"
                   to={`/settings`}
                 >
                   Settings
                 </Link>
                 <button
                   onClick={handleSignOut}
-                  className="text-blue-600 hover:text-blue-800 px-2 py-4 font-medium"
+                  className="text-blue-600 hover:text-blue-800 px-1 py-4 font-medium"
                 >
                   Sign Out
                 </button>
@@ -85,13 +85,13 @@ export default function Layout({}: Route.ComponentProps) {
               <div className="w-full flex justify-end">
                 <Link
                   to={"/signup"}
-                  className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
+                  className="underline text-blue-600 hover:text-blue-800 px-1 py-4"
                 >
                   Sign Up
                 </Link>
                 <Link
                   to={"/signin"}
-                  className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
+                  className="underline text-blue-600 hover:text-blue-800 px-1 py-4"
                 >
                   Sign In
                 </Link>
