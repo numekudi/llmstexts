@@ -118,6 +118,9 @@ export const clientLoader = async () => {
   }
   const profile = getCustomProfile(auth.currentUser.uid);
   const doc = await getDoc(profile);
+  if (!doc.exists()) {
+    return redirect("/settings");
+  }
   const docData = doc.data() as CustomUserData | undefined;
   return docData;
 };

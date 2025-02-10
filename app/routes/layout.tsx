@@ -5,11 +5,13 @@ import { getCustomProfile } from "~/firebase/repository.client";
 import { getDoc } from "firebase/firestore";
 import type { CustomUserData } from "~/firebase/models";
 import { useEffect, useState } from "react";
-import { signOut } from "firebase/auth";
+import { signOut, type User } from "firebase/auth";
 export const clientAction = async ({}: Route.ClientActionArgs) => {};
 
 export default function Layout({}: Route.ComponentProps) {
   const [profile, setProfile] = useState<CustomUserData>();
+  const [user, setUser] = useState<User>();
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,6 +27,7 @@ export default function Layout({}: Route.ComponentProps) {
     };
     f();
     auth.onAuthStateChanged(async (u) => {
+      setUser(u ?? undefined);
       const currentProfile = u && getCustomProfile(u.uid);
       const profile = currentProfile && (await getDoc(currentProfile));
       const data = profile && (profile.data() as CustomUserData);
@@ -48,14 +51,16 @@ export default function Layout({}: Route.ComponentProps) {
             Home
           </Link>
           <div className="flex-1 flex justify-end">
-            {profile && !loading && (
+            {user && !loading && (
               <>
-                <Link
-                  className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
-                  to={`users/${profile.customId}`}
-                >
-                  Manage Texts
-                </Link>
+                {profile && (
+                  <Link
+                    className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
+                    to={`users/${profile.customId}`}
+                  >
+                    Manage Texts
+                  </Link>
+                )}
                 <Link
                   className="underline text-blue-600 hover:text-blue-800 px-2 py-4"
                   to={`/create`}
@@ -76,7 +81,7 @@ export default function Layout({}: Route.ComponentProps) {
                 </button>
               </>
             )}
-            {!profile && !loading && (
+            {!user && !loading && (
               <div className="w-full flex justify-end">
                 <Link
                   to={"/signup"}

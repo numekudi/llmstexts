@@ -57,7 +57,10 @@ export default function Login({ actionData }: Route.ComponentProps) {
             autoComplete="current-password"
           />
         </label>
-        <button className="border rounded-lg px-2 w-fit mt-2" type="submit">
+        <button
+          className="border rounded-lg px-2 w-fit mt-2 cursor-pointer"
+          type="submit"
+        >
           {"Sign In"}
         </button>
       </Form>

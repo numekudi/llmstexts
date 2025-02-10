@@ -14,7 +14,11 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
     return null;
   }
   try {
-    await createUserWithEmailAndPassword(auth, String(email), String(password));
+    const res = await createUserWithEmailAndPassword(
+      auth,
+      String(email),
+      String(password)
+    );
     return redirect("/settings");
   } catch (error) {
     if (error instanceof FirebaseError) return { error: error.message };
@@ -46,7 +50,10 @@ export default function Signup({ actionData }: Route.ComponentProps) {
             required
           />
         </label>
-        <button className="border rounded-lg px-2 w-fit" type="submit">
+        <button
+          className="border rounded-lg px-2 w-fit cursor-pointer"
+          type="submit"
+        >
           Sign Up
         </button>
         {actionData?.error && (
