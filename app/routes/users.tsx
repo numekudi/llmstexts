@@ -31,7 +31,7 @@ export default function UsersUserId({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="h-full w-full">
-      <div className="container mx-auto p-4 flex flex-col justify-center prose dark:prose-invert w-full not-prose">
+      <main className="container mx-auto p-4 flex flex-col justify-center prose dark:prose-invert w-full not-prose">
         <MdLikeHeading title={`${data.pageUser?.customId}`} variant="h1" />
         <div className="py-4">{data.pageUser?.profile}</div>
         <MdLikeHeading title={`Texts for LLM`} variant="h2" />
@@ -51,9 +51,7 @@ export default function UsersUserId({ loaderData }: Route.ComponentProps) {
                         </div>
                         <div>
                           <div className="space-x-2">
-                            <span className="font-bold">
-                              {text.customName}a
-                            </span>
+                            <span className="font-bold">{text.customName}</span>
                             <span className="">{text.customId}</span>
                           </div>
                           <div className="flex justify-between">
@@ -78,7 +76,7 @@ export default function UsersUserId({ loaderData }: Route.ComponentProps) {
               );
             })}
         </div>
-      </div>
+      </main>
     </div>
   );
 }

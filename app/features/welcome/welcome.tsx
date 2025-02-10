@@ -8,7 +8,7 @@ export function Welcome({
   recentList: (LLMText & { id: string })[];
 }) {
   return (
-    <div className="container mx-auto p-4 flex flex-col justify-center prose dark:prose-invert">
+    <main className="container mx-auto p-4 flex flex-col justify-center prose dark:prose-invert">
       <MdLikeHeading title="llmstexts" variant="h1" />
       <p>
         A hub of LLM friendly Markdown, built for LLMs that browse the web for
@@ -94,7 +94,7 @@ export function Welcome({
                   </div>
                   <div>
                     <div className="space-x-2">
-                      <span className="font-bold">{text.customName}a</span>
+                      <span className="font-bold">{text.customName}</span>
                       <span className="">{text.customId}</span>
                     </div>
                     <div className="flex justify-between">
@@ -114,6 +114,6 @@ export function Welcome({
           </div>
         );
       })}
-    </div>
+    </main>
   );
 }

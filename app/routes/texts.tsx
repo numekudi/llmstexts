@@ -76,7 +76,7 @@ export default function Texts({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="h-full w-full">
-      <div className="container mx-auto p-4 flex flex-col justify-center prose dark:prose-invert w-full break-words">
+      <main className="container mx-auto p-4 flex flex-col justify-center prose dark:prose-invert w-full break-words">
         <MdLikeHeading title={"Text"} variant="h1" />
         <div className="not-prose">
           {textData && (
@@ -108,7 +108,7 @@ export default function Texts({ loaderData }: Route.ComponentProps) {
             </div>
           </Form>
         )}
-      </div>
+      </main>
     </div>
   );
 }
