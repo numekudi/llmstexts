@@ -1,4 +1,4 @@
-import { Form, Link, Outlet, redirect } from "react-router";
+import { Link, Outlet, useNavigate } from "react-router";
 import type { Route } from "./+types/layout";
 import { auth } from "~/firebase/firebase.client";
 import { getCustomProfile } from "~/firebase/repository.client";
@@ -11,6 +11,7 @@ export const clientAction = async ({}: Route.ClientActionArgs) => {};
 export default function Layout({}: Route.ComponentProps) {
   const [profile, setProfile] = useState<CustomUserData>();
   const [user, setUser] = useState<User>();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
 
@@ -38,6 +39,7 @@ export default function Layout({}: Route.ComponentProps) {
   const handleSignOut = async () => {
     await auth.authStateReady();
     await signOut(auth);
+    navigate("/");
   };
 
   return (

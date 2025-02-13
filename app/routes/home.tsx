@@ -1,9 +1,7 @@
-import MdLikeHeading from "~/components/mdLikeHeading";
 import type { Route } from "./+types/home";
 import { Welcome } from "~/features/welcome/welcome";
 import { listRecentLLMTexts } from "~/firebase/repository.server";
 import type { LLMText } from "~/firebase/models";
-import { Link } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
   return [
