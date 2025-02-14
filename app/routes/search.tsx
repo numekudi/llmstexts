@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { Form, useSearchParams } from "react-router";
+import { Form, useFetcher, useSearchParams } from "react-router";
 import type { Route } from "./+types/search";
 import MdLikeHeading from "~/components/mdLikeHeading";
-import { searchTextByUrl } from "~/firebase/repository.server";
+import {
+  searchTextByUrl,
+  searchTextNameBySim,
+} from "~/firebase/repository.server";
 import type { LLMText } from "~/firebase/models";
 import MdLikeList from "~/components/mdLikeList";
 const pageSize = 10;
@@ -22,6 +25,15 @@ export const loader = async ({ request }: Route.ActionArgs) => {
     return res.docs.map((d) => {
       return { id: d.id, ...d.data() } as LLMText & { id: string };
     });
+  } else if (type === "name") {
+    const res = await searchTextNameBySim(query);
+    if (!res) {
+      return [];
+    }
+    const data = await res.get();
+    return data.docs.map((d) => {
+      return { id: d.id, ...d.data() } as LLMText & { id: string };
+    });
   }
   return null;
 };
@@ -30,6 +42,7 @@ export default function Search({ loaderData }: Route.ComponentProps) {
   const defaultType = searchParams.get("type") || "name";
   const defaultQuery = searchParams.get("q") || "";
   const defaultPage = parseInt(searchParams.get("page") || "0");
+  console.log(loaderData);
 
   const [searchType, setSearchType] = useState(defaultType);
   const res = loaderData as (LLMText & { id: string })[] | undefined;
@@ -37,12 +50,7 @@ export default function Search({ loaderData }: Route.ComponentProps) {
     <div className="flex p-4 flex-col mx-auto prose dark:prose-invert">
       <MdLikeHeading title="Search" variant="h1" />
       <div className="flex flex-col items-center w-full">
-        <Form
-          method="get"
-          action="/search"
-          className="w-full max-w-sm"
-          navigate={true}
-        >
+        <Form method="get" action="/search" className="w-full max-w-sm">
           <fieldset className="flex gap-2">
             <div className="flex flex-col">
               <label>
@@ -76,20 +84,19 @@ export default function Search({ loaderData }: Route.ComponentProps) {
               defaultValue={defaultQuery}
             />
             <button type="submit" className="border rounded-lg px-3 py-2 ml-2">
-              Search
+              search
             </button>
           </div>
         </Form>
       </div>
-      {res?.length && (
-        <>
+      {
+        <div>
           <MdLikeHeading title="Result" variant="h2" />
-          {res &&
-            res.map((text, i) => {
-              return <MdLikeList text={text} key={i} />;
-            })}
-        </>
-      )}
+          {res?.map((text, i) => {
+            return <MdLikeList text={text} key={i} />;
+          })}
+        </div>
+      }
     </div>
   );
 }

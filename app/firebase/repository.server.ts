@@ -3,6 +3,7 @@ import { Readable } from "stream";
 import type { LLMText } from "./models";
 import { getDownloadURL } from "firebase-admin/storage";
 import { Timestamp } from "firebase-admin/firestore";
+import { getEmbedding } from "./vertex";
 type WithTimeStamp<T> = {
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -57,9 +58,21 @@ export const listRecentLLMTexts = async (
 
 export const searchTextNameBySim = async (
   queryName: string,
-  offset: number = 0,
-  limit: number = 10
-) => {};
+  limit: number = 30
+) => {
+  const queryVec = await getEmbedding(queryName);
+  console.log(queryVec);
+  if (queryVec) {
+    return db.collection("texts").findNearest({
+      vectorField: "customNameEmbedding",
+      queryVector: queryVec,
+      limit: limit,
+      distanceMeasure: "DOT_PRODUCT",
+      distanceResultField: "distance",
+    });
+  }
+  return;
+};
 
 export const searchTextByUrl = async (
   query: string,

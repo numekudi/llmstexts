@@ -15,6 +15,7 @@ import {
   getCustomProfile,
 } from "~/firebase/repository.server";
 import { getDoc } from "firebase/firestore";
+import { FieldValue } from "firebase-admin/firestore";
 const LIMIT = 50;
 const SIZE = 1024 * 1024 * 4; // 4MB
 // alphabet + numbers + underscore
@@ -91,6 +92,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
       await uploadTextFile(decoded.uid, customId, file);
       url = await getLLMTextUrl(decoded.uid, customId);
     }
+    const vec = await getEmbedding(customName);
     await createLLMText(decoded.uid, {
       customId,
       customName: customName,
@@ -100,11 +102,10 @@ export const action = async ({ request }: Route.ActionArgs) => {
       filename: file?.name || null,
       uid: decoded.uid,
       downloadUrl: url as string,
-      customNameEmbedding: await getEmbedding(customName),
+      customNameEmbedding: FieldValue.vector(vec),
     });
     const profile = await getCustomProfile(decoded.uid);
     const docData = profile.data() as CustomUserData | undefined;
-    console.log("done");
     return redirect(`/users/${docData?.customId}`);
   } catch (error) {
     console.error(error);
