@@ -1,4 +1,4 @@
-import type { FieldValue } from "firebase/firestore";
+import { type FieldValue, type VectorValue } from "firebase/firestore";
 
 export type WithTimeStamp<T> = {
   createdAt: FieldValue;
@@ -20,4 +20,5 @@ export type LLMText = {
   webpage?: string;
   inputType: "file" | "url";
   downloadUrl: string;
+  customNameEmbedding?: VectorValue | number[];
 };

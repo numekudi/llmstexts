@@ -1,32 +1,35 @@
-import { useId, useState } from "react";
-import { auth, storage } from "~/firebase/firebase.client";
-import { Form, Link, Navigate, redirect, useFetcher } from "react-router";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { FirebaseError } from "firebase/app";
+import { useState } from "react";
+import { redirect, useFetcher } from "react-router";
+import { auth } from "~/firebase/firebase.client";
+import { getCustomProfile as getCustomProfileClient } from "~/firebase/repository.client";
 import MdLikeHeading from "~/components/mdLikeHeading";
-import {
-  countLLMText,
-  createLLMText,
-  CustomIdAlreadyExistsError,
-  getCustomProfile,
-  getLLMTextUrl,
-  updateProfile,
-  uploadTextFile,
-} from "~/firebase/repository.client";
-import type { Route } from "./+types/settings";
-import { getDoc } from "firebase/firestore";
 import type { CustomUserData } from "~/firebase/models";
+import type { Route } from "./+types/create";
+import { getEmbedding } from "~/firebase/vertex";
+import { serverAuth } from "~/firebase/firebase.server";
+import {
+  createLLMText,
+  uploadTextFile,
+  countLLMText,
+  getLLMTextUrl,
+  getCustomProfile,
+} from "~/firebase/repository.server";
+import { getDoc } from "firebase/firestore";
+import { FieldValue } from "firebase-admin/firestore";
 const LIMIT = 50;
 const SIZE = 1024 * 1024 * 4; // 4MB
 // alphabet + numbers + underscore
 const CUSTOM_ID_REGEX = /^[a-zA-Z0-9_]+$/;
 
-export const clientAction = async ({ request }: Route.ClientActionArgs) => {
-  await auth.authStateReady();
-  if (!auth.currentUser) {
-    return redirect("/");
-  }
+export const action = async ({ request }: Route.ActionArgs) => {
   const data = await request.formData();
+  const token = String(data.get("token"));
+  const decoded = token ? await serverAuth.verifyIdToken(token) : undefined;
+
+  if (!decoded?.uid) {
+    return { error: "Not authenticated" };
+  }
+
   const customId = String(data.get("customId"));
   if (customId.length === 0) {
     return { error: "Custom ID cannot be empty" };
@@ -82,32 +85,31 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
   }
   try {
     if (file) {
-      const count = await countLLMText(auth.currentUser.uid);
+      const count = await countLLMText(decoded.uid);
       if (count > LIMIT) {
         return { error: "Cannot create more than 50" };
       }
-      await uploadTextFile(auth.currentUser.uid, customId, file);
-      url = await getLLMTextUrl(auth.currentUser.uid, customId);
+      await uploadTextFile(decoded.uid, customId, file);
+      url = await getLLMTextUrl(decoded.uid, customId);
     }
-    await createLLMText(auth.currentUser.uid, {
+    const vec = await getEmbedding(customName);
+    await createLLMText(decoded.uid, {
       customId,
       customName: customName,
       description: description,
       inputType: inputType,
       webpage: webpageUrl,
       filename: file?.name || null,
-      uid: auth.currentUser.uid,
+      uid: decoded.uid,
       downloadUrl: url as string,
+      customNameEmbedding: FieldValue.vector(vec),
     });
-    const profile = getCustomProfile(auth.currentUser.uid);
-    const doc = await getDoc(profile);
-    const docData = doc.data() as CustomUserData | undefined;
+    const profile = await getCustomProfile(decoded.uid);
+    const docData = profile.data() as CustomUserData | undefined;
     return redirect(`/users/${docData?.customId}`);
   } catch (error) {
     console.error(error);
-    if (error instanceof CustomIdAlreadyExistsError) {
-      return { error: "Custom ID already exists. Please try another ID." };
-    }
+    return { error: error };
   }
 };
 
@@ -116,13 +118,13 @@ export const clientLoader = async () => {
   if (!auth.currentUser) {
     return redirect("/signin");
   }
-  const profile = getCustomProfile(auth.currentUser.uid);
+  const profile = getCustomProfileClient(auth.currentUser.uid);
   const doc = await getDoc(profile);
   if (!doc.exists()) {
     return redirect("/settings");
   }
   const docData = doc.data() as CustomUserData | undefined;
-  return docData;
+  return { user: docData, idToken: await auth.currentUser.getIdToken() };
 };
 
 export default function Create({
@@ -132,6 +134,8 @@ export default function Create({
   const [inputType, setInputType] = useState<"file" | "url">("file");
   const fetcher = useFetcher();
 
+  console.log(actionData);
+
   return (
     <div className="container mx-auto p-4 flex flex-col prose dark:prose-invert">
       <fetcher.Form
@@ -140,9 +144,10 @@ export default function Create({
         className="flex flex-col space-y-2"
       >
         <MdLikeHeading title="Create" variant="h1" />
+        <input type="hidden" name="token" value={loaderData.idToken}></input>
         <label htmlFor="customId">
           <div className="font-bold">Your text ID*</div>
-          <span>{loaderData?.customId} / </span>
+          <span>{loaderData?.user?.customId} / </span>
           <input
             className="border rounded-lg"
             type="text"
@@ -221,7 +226,7 @@ export default function Create({
           </label>
         )}
         <button
-          className="border rounded-lg px-2 w-fit"
+          className="border rounded-lg px-2 w-fit cursor-pointer"
           type="submit"
           disabled={fetcher.state === "submitting"}
         >
@@ -229,8 +234,8 @@ export default function Create({
         </button>
       </fetcher.Form>
       {actionData?.error && <p className="text-red-500">{actionData?.error}</p>}
-      {actionData?.message && (
-        <p className="text-green-500">{actionData.message}</p>
+      {actionData?.error && (
+        <p className="text-green-500">{actionData.error}</p>
       )}
     </div>
   );

@@ -12,5 +12,6 @@ export default [
     route("/users/:userId", "routes/users.tsx"),
     route("/users/:userId/texts/:textId", "routes/texts.tsx"),
     route("/u/:userId/t/:textId", "routes/textsByUid.tsx"),
+    route("/search", "routes/search.tsx"),
   ]),
 ] satisfies RouteConfig;
