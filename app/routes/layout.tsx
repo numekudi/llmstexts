@@ -45,30 +45,38 @@ export default function Layout({}: Route.ComponentProps) {
   return (
     <div className="w-full">
       <div className="w-full">
-        <div className="flex justify-between w-full dark:bg-zinc-900 bg-gray-100 px-4 font-bold">
+        <div className="flex justify-between w-full dark:bg-zinc-900 bg-gray-100 px-4 font-bold text-sm md:text-lg">
           <Link
             className="underline text-blue-600 hover:text-blue-800 px-1 py-4"
             to={"/"}
           >
             Home
           </Link>
+          <Link
+            className="underline text-blue-600 hover:text-blue-800 px-1 py-4"
+            to={"/search"}
+          >
+            Search
+          </Link>
           <div className="flex-1 flex justify-end">
             {user && !loading && (
               <>
                 {profile && (
-                  <Link
-                    className="underline text-blue-600 hover:text-blue-800 px-1 py-4"
-                    to={`users/${profile.customId}`}
-                  >
-                    Manage Texts
-                  </Link>
+                  <>
+                    <Link
+                      className="underline text-blue-600 hover:text-blue-800 px-1 py-4"
+                      to={`users/${profile.customId}`}
+                    >
+                      Manage Texts
+                    </Link>
+                    <Link
+                      className="underline text-blue-600 hover:text-blue-800 px-1 py-4"
+                      to={`/create`}
+                    >
+                      Create Text
+                    </Link>
+                  </>
                 )}
-                <Link
-                  className="underline text-blue-600 hover:text-blue-800 px-1 py-4"
-                  to={`/create`}
-                >
-                  Create Text
-                </Link>
                 <Link
                   className="underline text-blue-600 hover:text-blue-800 px-1 py-4"
                   to={`/settings`}

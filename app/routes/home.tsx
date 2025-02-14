@@ -22,7 +22,9 @@ export const loader = async ({}: Route.LoaderArgs) => {
 export default function Home({ loaderData }: Route.ComponentProps) {
   return (
     <div className="h-full w-full">
-      <Welcome recentList={loaderData.recent ?? []} />
+      <Welcome
+        recentList={(loaderData.recent as (LLMText & { id: string })[]) ?? []}
+      />
     </div>
   );
 }
