@@ -1,9 +1,7 @@
-import MdLikeHeading from "~/components/mdLikeHeading";
 import type { Route } from "./+types/home";
 import { Welcome } from "~/features/welcome/welcome";
 import { listRecentLLMTexts } from "~/firebase/repository.server";
 import type { LLMText } from "~/firebase/models";
-import { Link } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -24,7 +22,9 @@ export const loader = async ({}: Route.LoaderArgs) => {
 export default function Home({ loaderData }: Route.ComponentProps) {
   return (
     <div className="h-full w-full">
-      <Welcome recentList={loaderData.recent ?? []} />
+      <Welcome
+        recentList={(loaderData.recent as (LLMText & { id: string })[]) ?? []}
+      />
     </div>
   );
 }
