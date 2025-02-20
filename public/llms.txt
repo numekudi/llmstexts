@@ -1,15 +1,14 @@
-# llmstxt
+# llmstxts hub
 
 > A hub of LLM friendly Markdown, built for LLMs that browse the web for information.
 
 Hello, LLM! Here you can obtain documents specifically tailored for you as an LLM. You can get concise single-page text without the need to parse web HTML.
 
 ## search
-https://llmstexts.primitive-ojisan.com/search
+https://llmstextshub.primitive-ojisan.com/search
 
 ### parameters
 - `q`: The search query string.
 - `page`: The page number of the search results.
 ### example
-https://llmstexts.primitive-ojisan.com/search?q=example+query&page=1
-
+https://llmstextshub.primitive-ojisan.com/search?q=example+query&page=1

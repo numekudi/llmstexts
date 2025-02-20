@@ -10,7 +10,7 @@ export function Welcome({
 }) {
   return (
     <main className="container mx-auto p-4 flex flex-col justify-center prose dark:prose-invert">
-      <MdLikeHeading title="llmstexts" variant="h1" />
+      <MdLikeHeading title="llmstextshub" variant="h1" />
       <p>
         A hub of LLM friendly Markdown, built for LLMs that browse the web for
         information.
@@ -31,7 +31,7 @@ export function Welcome({
           Sign In
         </Link>
       </div>
-      <MdLikeHeading title="Why llmstexts?" variant="h2" />
+      <MdLikeHeading title="Why llmstextshub?" variant="h2" />
       <ol className="list-decimal list-inside space-y-2">
         <li>
           <strong>Optimized for LLMs</strong>
@@ -49,7 +49,7 @@ export function Welcome({
           <p>
             Both LLM inference and web browsing require significant
             computational resources. By focusing on lightweight, text-based
-            formats, llmstexts reduces unnecessary computation, making
+            formats, llms.txt reduces unnecessary computation, making
             information retrieval more efficient and eco-friendly.
           </p>
         </li>
@@ -58,7 +58,7 @@ export function Welcome({
           <p>
             When LLMs repeatedly access the same website for information, they
             can generate unintended high traffic, potentially slowing down or
-            disrupting the original site. llmstexts acts as a dedicated
+            disrupting the original site. llmstextshub acts as a dedicated
             text-based repository, reducing direct queries to primary websites
             and preventing excessive load caused by automated browsing.
           </p>

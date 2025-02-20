@@ -1,8 +1,7 @@
-import { remark } from "remark";
 import type { Route } from "../+types/root";
 
 const content = `
-# llmstexts
+# llmstextshub
 A hub of Markdown, built for LLMs that browse the web for information.
 `;
 
