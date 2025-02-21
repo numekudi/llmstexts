@@ -31,6 +31,25 @@ export function Welcome({
           Sign In
         </Link>
       </div>
+      <MdLikeHeading title="What is llms.txt?" variant="h2" />
+      <p>
+        This web service is inspired by{" "}
+        <a
+          href="https://llmstxt.org/"
+          className="underline text-blue-600 hover:text-blue-800"
+        >
+          https://llmstxt.org
+        </a>
+      </p>
+      <p>
+        llms.txt is a Markdown file designed to be easily readable by both
+        humans and language models (LLMs). This file offers brief background
+        information, guidance, and links to detailed markdown files. llms.txt
+        markdown is human and LLM readable, but is also in a precise format
+        allowing fixed processing methods (i.e., classical programming
+        techniques such as parsers and regex).
+      </p>
+
       <MdLikeHeading title="Why llmstextshub?" variant="h2" />
       <ol className="list-decimal list-inside space-y-2">
         <li>
