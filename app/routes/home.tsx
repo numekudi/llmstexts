@@ -5,7 +5,7 @@ import type { LLMText } from "~/firebase/models";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "llmstxts" },
+    { title: "llmstxtshub" },
     { name: "description", content: "A Website for Large Language Models." },
   ];
 }
