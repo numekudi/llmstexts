@@ -1,3 +1,13 @@
+llms.txtを共有できる、LLMに巡回してもらうことを意識したwebアプリ
+
+https://llmstextshub.primitive-ojisan.com/
+
+Qiita
+https://qiita.com/numekudi/items/16799a62b62f7c012981
+
+
+
+
 # Welcome to React Router!
 
 A modern, production-ready template for building full-stack React applications using React Router.
